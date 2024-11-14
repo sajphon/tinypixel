@@ -1,0 +1,61 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Blog Posts{% endblock %}
+
+{% block body %}
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="mb-0">Blog Posts</h1>
+        <a href="{{ path('blog_create') }}" class="btn btn-primary">New blog post</a>
+    </div>
+
+    {% if blogPosts|length > 0 %}
+        <div class="list-group">
+            {% for post in blogPosts %}
+                <div class="list-group-item mb-4 p-4 bg-white rounded shadow-sm">
+                    <div class="mb-3">
+                        <h2 class="mb-1">
+                            <a href="{{ path('blog_detail', { blogPostUuid: post.uuid }) }}" class="text-decoration-none text-dark">
+                                {{ post.title }}
+                            </a>
+                        </h2>
+                        <p class="text-muted small">
+                            By <strong>{{ post.author.name }}</strong>
+                            on {{ post.createdAt|date('F j, Y') }}
+                            · {{ post.comments|length }} {{ post.comments|length == 1 ? 'comment' : 'comments' }}
+                        </p>
+                    </div>
+                    <div class="mb-3">
+                        <p class="mb-0">
+                            {{ post.description|slice(0, 300) ~ (post.description|length > 300 ? '...' : '') }}
+                        </p>
+                    </div>
+                    <div>
+                        <a href="{{ path('blog_detail', { blogPostUuid: post.uuid }) }}" class="btn btn-outline-primary btn-sm">Read More</a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <nav class="mt-4">
+            <ul class="pagination justify-content-center">
+                {% if currentPage > 1 %}
+                    <li class="page-item">
+                        <a class="page-link" href="{{ path('blog_list', { page: currentPage - 1 }) }}">Previous</a>
+                    </li>
+                {% endif %}
+                {% for page in 1..totalPages %}
+                    <li class="page-item {% if page == currentPage %}active{% endif %}">
+                        <a class="page-link" href="{{ path('blog_list', { page: page }) }}">{{ page }}</a>
+                    </li>
+                {% endfor %}
+                {% if currentPage < totalPages %}
+                    <li class="page-item">
+                        <a class="page-link" href="{{ path('blog_list', { page: currentPage + 1 }) }}">Next</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+    {% else %}
+        <p class="text-muted text-center">No blog posts available. <a href="{{ path('blog_create') }}">Post a new blog</a>.</p>
+    {% endif %}
+{% endblock %}

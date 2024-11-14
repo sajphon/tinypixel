@@ -1,0 +1,72 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Author Details{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h1 class="mb-4">Author Details</h1>
+
+        <div class="mb-3">
+            <p><strong>Name:</strong> {{ author.name }}</p>
+            <p><strong>Email:</strong> {{ author.email }}</p>
+        </div>
+
+        <div class="mb-4">
+            <a href="{{ path('author_list') }}" class="btn btn-secondary">Back to List</a>
+            <form action="{{ path('author_delete', { authorUuid: author.uuid }) }}" method="post" class="d-inline">
+                <button type="submit" class="btn btn-danger">Delete Author</button>
+            </form>
+        </div>
+
+        <hr>
+
+        <h2 class="mb-4">Blog Posts by {{ author.name }}</h2>
+
+        {% if blogPosts|length > 0 %}
+            <ul class="list-group mb-4">
+                {% for post in blogPosts %}
+                    <li class="list-group-item">
+                        <h4 class="mb-1">
+                            <a href="{{ path('blog_detail', { blogPostUuid: post.uuid }) }}"
+                               class="text-decoration-none text-dark">
+                                {{ post.title }}
+                            </a>
+                        </h4>
+                        <p class="text-muted small mb-1">
+                            Published on {{ post.createdAt|date('F j, Y') }}
+                            · {{ post.comments|length }} {{ post.comments|length == 1 ? 'comment' : 'comments' }}
+                        </p>
+                        <p class="mb-0">
+                            {{ post.description|slice(0, 200) ~ (post.description|length > 200 ? '...' : '') }}
+                        </p>
+                    </li>
+                {% endfor %}
+            </ul>
+
+            <nav class="mt-4">
+                <ul class="pagination justify-content-center">
+                    {% if currentPage > 1 %}
+                        <li class="page-item">
+                            <a class="page-link"
+                               href="{{ path('author_detail', { authorUuid: author.uuid, page: currentPage - 1 }) }}">Previous</a>
+                        </li>
+                    {% endif %}
+                    {% for page in 1..totalPages %}
+                        <li class="page-item {% if page == currentPage %}active{% endif %}">
+                            <a class="page-link"
+                               href="{{ path('author_detail', { authorUuid: author.uuid, page: page }) }}">{{ page }}</a>
+                        </li>
+                    {% endfor %}
+                    {% if currentPage < totalPages %}
+                        <li class="page-item">
+                            <a class="page-link"
+                               href="{{ path('author_detail', { authorUuid: author.uuid, page: currentPage + 1 }) }}">Next</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        {% else %}
+            <p class="text-muted">This author has not written any blog posts yet.</p>
+        {% endif %}
+    </div>
+{% endblock %}

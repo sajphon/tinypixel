@@ -1,0 +1,61 @@
+blog_list      :
+  path       : /
+  controller : App\Application\Blog\Controller\BlogController::list
+  methods    : [ GET ]
+
+blog_detail    :
+  path         : /blog/{blogPostUuid}
+  controller   : App\Application\Blog\Controller\BlogController::detail
+  methods      : [ GET ]
+  requirements :
+    blogPostUuid : '[0-9a-fA-F\-]{36}'
+
+blog_create    :
+  path       : /blog/create
+  controller : App\Application\Blog\Controller\BlogController::create
+  methods    : [ GET, POST ]
+
+author_create  :
+  path       : /author/create
+  controller : App\Application\User\Controller\AuthorController::create
+  methods    : [ GET, POST ]
+
+author_list    :
+  path       : /author/list
+  controller : App\Application\User\Controller\AuthorController::list
+  methods    : [ GET ]
+
+author_detail  :
+  path         : /author/{authorUuid}
+  controller   : App\Application\User\Controller\AuthorController::detail
+  methods      : [ GET ]
+  requirements :
+    authorUuid : '[0-9a-fA-F\-]{36}'
+
+author_delete  :
+  path         : /author/{authorUuid}/delete
+  controller   : App\Application\User\Controller\AuthorController::delete
+  methods      : [ POST ]
+  requirements :
+    authorUuid : '[0-9a-fA-F\-]{36}'
+
+comment_create :
+  path         : /blog/{blogPostUuid}/comment/create
+  controller   : App\Application\Blog\Controller\CommentController::create
+  methods      : [ GET, POST ]
+  requirements :
+    blogPostUuid : '[0-9a-fA-F\-]{36}'
+
+comment_delete :
+  path         : /blog/{blogPostUuid}/comment/{commentUuid}/delete
+  controller   : App\Application\Blog\Controller\CommentController::delete
+  methods      : [ POST ]
+  requirements :
+    blogPostUuid : '[0-9a-fA-F\-]{36}'
+    commentUuid  : '[0-9a-fA-F\-]{36}'
+
+### --- ###
+healthcheck:
+  path: /healthcheck
+  controller: App\Controller\HealthcheckController::healthcheck
+  methods: GET

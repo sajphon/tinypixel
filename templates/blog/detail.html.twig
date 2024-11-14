@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ blogPost.title }}{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h1 class="mb-4">{{ blogPost.title }}</h1>
+        <p class="text-muted">
+            <strong>Author:</strong> {{ blogPost.author.name }}<br>
+            <strong>Published on:</strong> {{ blogPost.createdAt|date('F j, Y H:i') }}
+        </p>
+
+        <div class="content mb-5">
+            <h4>Description</h4>
+            <p>{{ blogPost.description }}</p>
+
+            <h4>Content</h4>
+            <p>{{ blogPost.content }}</p>
+        </div>
+
+        <hr>
+
+        <h2>Comments ({{ blogPost.comments|length }})</h2>
+        {% if blogPost.comments|length > 0 %}
+            <ul class="list-group mb-4">
+                {% for comment in blogPost.comments %}
+                    <li class="list-group-item">
+                        <strong>{{ comment.author.name }}</strong>
+                        <span class="text-muted">({{ comment.createdAt|date('F j, Y H:i') }})</span>
+                        <p>{{ comment.content }}</p>
+                        <form action="{{ path('comment_delete', { blogPostUuid: blogPost.uuid, commentUuid: comment.uuid }) }}"
+                              method="post" class="d-inline">
+                            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                        </form>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="text-muted">No comments yet. Be the first to comment!</p>
+        {% endif %}
+        <a href="{{ path('comment_create', { blogPostUuid: blogPost.uuid }) }}" class="btn btn-primary">Add Comment</a>
+        <br>
+        <a href="{{ path('blog_list') }}" class="btn btn-secondary mt-3">Back to Blog List</a>
+    </div>
+{% endblock %}
